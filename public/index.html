@@ -10,6 +10,28 @@
       content="Web site created using create-react-app"
     />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <style>
+        .employee-list {
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+            border-radius: 8px;
+        }
+
+        .employee-list h1 { color: #333; }
+
+        .employee-list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .employee-list li {
+            padding: 8px;
+            margin-bottom: 5px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+    </style>
     <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
@@ -29,15 +51,56 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+    <!-- React and Babel CDN -->
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+    <!-- React Code -->
+    <script type="text/babel">
+        // EmployeeList Component
+        function EmployeeList(props) {
+            return (
+                <div className="employee-list">
+                    <h1>Employee List</h1>
+                    <ul>
+                        {props.employees.map(employee => (
+                            <li key={employee.EmployeeId}>
+                                <a href={/employees/${employee.EmployeeId}}>
+                                    {employee.name}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            );
+        }
+
+        // App Component
+        function App() {
+            const [employees, setEmployees] = React.useState([]);
+
+            React.useEffect(() => {
+                // Load employees from local storage
+                const savedEmployees = JSON.parse(localStorage.getItem('employees')) || [];
+                setEmployees(savedEmployees);
+            }, []);
+
+            React.useEffect(() => {
+                // Save employees to local storage
+                localStorage.setItem('employees', JSON.stringify(employees));
+            }, [employees]);
+
+            return (
+                <div className="App">
+                    <EmployeeList employees={employees} />
+                </div>
+            );
+        }
+
+        // Rendering the App Component
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
   </body>
 </html>
